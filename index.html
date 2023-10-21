@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="image.jpeg" type="image/jpeg">
+    <title>Todo list</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .container {
+            margin: auto;
+            width: 90%;
+            max-width: 500px;
+            background-color: #ccc;
+            padding: 10px;
+            height: 200px;
+            border-radius: 10px;
+            border: 1px solid black;
+        }
+
+        @media screen and (max-width: 320px) {
+            .container {
+                width: 100%;
+                /* Take up the full width of the viewport */
+                margin: 0;
+                /* Remove margins for full-width layout */
+            }
+        }
+
+        .container ul li {
+            list-style: none;
+        }
+
+        #title {
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            padding-top: 10px;
+        }
+
+        .tasks {
+            display: flex;
+            padding: 10px;
+        }
+
+        #titlec {
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 10px;
+        }
+
+        #descc {
+            padding: 15px;
+            border: 1px solid black;
+            border-radius: 10px;
+        }
+
+        #submit {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #0d6efd;
+            color: white;
+            border-style: none;
+            border-radius: 6px;
+        }
+
+        .del {
+            padding: 10px;
+            cursor: pointer;
+            background-color: red;
+            color: white;
+            border-style: none;
+            border-radius: 6px;
+        }
+
+        #tasks {
+            display: flex;
+            margin-top: 10px;
+            margin: auto;
+            padding: 15px;
+            width: 500px;
+            border-radius: 10px;
+            /* margin-right: auto; */
+        }
+
+        .dtask {
+            padding: 10px;
+        }
+
+        @media screen and (max-width: 320px) {
+            .dtask {
+                padding: 5px;
+                /* Adjust the padding as per your requirements */
+            }
+        }
+
+        .title {
+            padding-bottom: 5px;
+            font-size: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="title">Todo list</h1><br>
+    <div class="container" id="container">
+        <form id="forms">
+            <input type="text" id="titlec" placeholder="Add Task"><br><br>
+            <textarea id="descc" placeholder="Add Description"></textarea><br><br>
+            <input type="submit" id="submit">
+            <button class="del" type="button">Delete</button>
+        </form>
+    </div><br><br>
+    <div id="tasks">
+    </div>
+    <script>
+        let sub = document.getElementById("submit");
+        let title = document.getElementById("titlec");
+        let desc = document.getElementById("descc");
+        let tasksContainer = document.getElementById("tasks");
+        let TodoListName = "Todo";
+        let getTodoList = JSON.parse(localStorage.getItem(TodoListName)) || [];
+
+        sub.addEventListener("click", (e) => {
+            e.preventDefault();
+            setTodo(title.value, desc.value);
+            renderTasks();
+            title.value = "";
+            desc.value = "";
+        });
+
+        let renderTasks = () => {
+            tasksContainer.innerHTML = "";
+            for (let i = 0; i < getTodoList.length; i++) {
+                tasksContainer.innerHTML += `
+                <div class="dtask">
+                    <h3 class="title">${getTodoList[i].title}</h3>
+                    <p class="desc">${getTodoList[i].desc}</p><br>
+                    <button class="del" onclick="dele(${i})">Delete</button><br>
+                    </div>`;
+            }
+        }; //for display tasks
+
+        let dele = (index) => {
+            if (confirm("Do you reallywant to delete?") == true) {
+                getTodoList.splice(index, 1);
+                localStorage.setItem(TodoListName, JSON.stringify(getTodoList));
+                renderTasks();
+            }
+        };
+
+        let setTodo = (title, desc) => {
+            if (title.trim() !== "" && desc.trim() !== "") {
+                let newTodo = {
+                    title,
+                    desc,
+                };
+                getTodoList.push(newTodo);
+                localStorage.setItem(TodoListName, JSON.stringify(getTodoList));
+            }
+            else {
+                alert("Blank tasks can not be submitted!")
+            }
+        };
+
+
+        // Initial rendering of tasks
+        renderTasks();
+
+
+
+    </script>
+</body>
+
+</html>
